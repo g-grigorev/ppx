@@ -1,0 +1,49 @@
+/* счетчик для лендов */
+
+var counter = {
+	  translate: function(ru, val) {
+	  	var ru = {
+			'days':['','дней','день','дня'],
+			'hours':['час','ов','','а'],
+			'minutes':['минут','','а','ы'],
+			'seconds':['секунд','','а','ы']
+		}
+
+		return ru[val];
+	  },
+	  ci: function(n,c){ 
+		return c[0]+((/^[0,2-9]?[1]$/.test(n))?c[2]:((/^[0,2-9]?[2-4]$/.test(n))?c[3]:c[1]))
+	  },
+	  run: function(dt, id) {
+	    var _day, _hour, _minute, _second, end, selector, showRemaining, timer;
+	    selector = document.getElementsByClassName(id);
+
+	    end = new Date(dt);
+	    _second = 1000;
+	    _minute = _second * 60;
+	    _hour = _minute * 60;
+	    _day = _hour * 24;
+	    showRemaining = function() {
+	      var days, distance, hours, minutes, now, seconds;
+	      now = new Date();
+	      distance = end - now;
+	      if (distance <= 0) {
+	        clearInterval(timer);
+	        selector.innerHTML = "Успех!";
+	        return;
+	      }
+	      days = Math.floor(distance / _day);
+	      hours = Math.floor((distance % _day) / _hour);
+	      minutes = Math.floor((distance % _hour) / _minute);
+	      seconds = Math.floor((distance % _minute) / _second);
+
+
+		  for (var i = 0; i < selector.length; i++) {
+		    selector[i].innerHTML = "<div class=counter__item><span class=counter__item-num>"+days+"</span>"+counter.ci(days,counter.translate('ru','days'))+"</div> <div class=counter__item--separator>:</div><div class=counter__item><span class=counter__item-num>"+hours+"</span>"+counter.ci(hours,counter.translate('ru','hours'))+"</div><div class=counter__item--separator>:</div><div class=counter__item><span class=counter__item-num>"+minutes+"</span>"+counter.ci(minutes,counter.translate('ru','minutes'))+"</div><div class=counter__item--separator>:</div><div class=counter__item><span class=counter__item-num>"+seconds+"</span>"+counter.ci(seconds,counter.translate('ru','seconds'))+"</div>";
+		    	//days + ci(days,ru['days']) + hours + ci(hours,ru['hours']) + minutes + ci(hours,ru['minutes']) + seconds + ci(seconds,ru['seconds']);
+		  }
+	      return true;
+	    };
+	    return timer = setInterval(showRemaining, 1000);
+	  }
+}
